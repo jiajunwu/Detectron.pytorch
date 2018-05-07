@@ -36,11 +36,15 @@ def add_mask_rcnn_blobs(blobs, sampled_boxes, roidb, im_scale, batch_idx):
     # Prepare the mask targets by associating one gt mask to each training roi
     # that has a fg (non-bg) class label.
     M = cfg.MRCNN.RESOLUTION
-    polys_gt_inds = np.where((roidb['gt_classes'] > 0) &
-                             (roidb['is_crowd'] == 0))[0]
-    polys_gt = [roidb['segms'][i] for i in polys_gt_inds]
-    boxes_from_polys = segm_utils.polys_to_boxes(polys_gt)
-    # boxes_from_polys = [roidb['boxes'][i] for i in polys_gt_inds]
+
+    segms_gt_inds = np.where((roidb['gt_classes'] > 0) &
+                            (roidb['is_crowd'] == 0))[0]
+    segms_gt = [roidb['segms'][i] for i in segms_gt_inds]
+    if 'clevr_new' in cfg.TRAIN.DATASETS:
+        boxes_from_segms = segm_utils.rle_masks_to_boxes(segms_gt)[0]
+    else:
+        boxes_from_segms = segm_utils.polys_to_boxes(segms_gt)
+
     fg_inds = np.where(blobs['labels_int32'] > 0)[0]
     roi_has_mask = blobs['labels_int32'].copy()
     roi_has_mask[roi_has_mask > 0] = 1
@@ -53,21 +57,24 @@ def add_mask_rcnn_blobs(blobs, sampled_boxes, roidb, im_scale, batch_idx):
         # Find overlap between all foreground rois and the bounding boxes
         # enclosing each segmentation
         rois_fg = sampled_boxes[fg_inds]
-        overlaps_bbfg_bbpolys = box_utils.bbox_overlaps(
+        overlaps_bbfg_bbsegms = box_utils.bbox_overlaps(
             rois_fg.astype(np.float32, copy=False),
-            boxes_from_polys.astype(np.float32, copy=False))
+            boxes_from_segms.astype(np.float32, copy=False))
         # Map from each fg rois to the index of the mask with highest overlap
         # (measured by bbox overlap)
-        fg_polys_inds = np.argmax(overlaps_bbfg_bbpolys, axis=1)
+        fg_segms_inds = np.argmax(overlaps_bbfg_bbsegms, axis=1)
 
         # add fg targets
         for i in range(rois_fg.shape[0]):
-            fg_polys_ind = fg_polys_inds[i]
-            poly_gt = polys_gt[fg_polys_ind]
+            fg_segms_ind = fg_segms_inds[i]
+            segm_gt = segms_gt[fg_segms_ind]
             roi_fg = rois_fg[i]
-            # Rasterize the portion of the polygon mask within the given fg roi
+            # Rasterize the portion of the mask within the given fg roi
             # to an M x M binary image
-            mask = segm_utils.polys_to_mask_wrt_box(poly_gt, roi_fg, M)
+            if 'clevr_new' in cfg.TRAIN.DATASETS:
+                mask = segm_utils.rles_to_mask_wrt_box(segm_gt, roi_fg, M)
+            else:
+                mask = segm_utils.polys_to_mask_wrt_box(segm_gt, roi_fg, M)
             mask = np.array(mask > 0, dtype=np.int32)  # Ensure it's binary
             masks[i, :] = np.reshape(mask, M**2)
     else:  # If there are no fg masks (it does happen)

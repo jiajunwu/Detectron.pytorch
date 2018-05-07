@@ -36,6 +36,7 @@ from core.config import cfg
 from core.test import im_detect_all
 from datasets import task_evaluation
 from datasets.json_dataset import JsonDataset
+from datasets.clevr_dataset import ClevrDataset
 from modeling import model_builder
 import nn as mynn
 from utils.detectron_weight_helper import load_detectron_weight
@@ -145,7 +146,10 @@ def test_net_on_dataset(
         multi_gpu=False,
         gpu_id=0):
     """Run inference on a dataset."""
-    dataset = JsonDataset(dataset_name)
+    if dataset_name.startswith('clevr'):
+        dataset = ClevrDataset(dataset_name)
+    else:
+        dataset = JsonDataset(dataset_name)
     test_timer = Timer()
     test_timer.tic()
     if multi_gpu:
@@ -344,7 +348,10 @@ def get_roidb_and_dataset(dataset_name, proposal_file, ind_range):
     """Get the roidb for the dataset specified in the global cfg. Optionally
     restrict it to a range of indices if ind_range is a pair of integers.
     """
-    dataset = JsonDataset(dataset_name)
+    if dataset_name.startswith('clevr'):
+        dataset = ClevrDataset(dataset_name)
+    else:
+        dataset = JsonDataset(dataset_name)
     if cfg.TEST.PRECOMPUTED_PROPOSALS:
         assert proposal_file, 'No proposal file given'
         roidb = dataset.get_roidb(

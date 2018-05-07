@@ -85,12 +85,15 @@ if __name__ == '__main__':
     if args.set_cfgs is not None:
         merge_cfg_from_list(args.set_cfgs)
 
-    if args.dataset == "coco2017":
-        cfg.TEST.DATASETS = ('coco_2017_val',)
+    if args.dataset == "coco2014":
+        cfg.TEST.DATASETS = ('coco_2014_val',)
         cfg.MODEL.NUM_CLASSES = 81
-    elif args.dataset == "keypoints_coco2017":
-        cfg.TEST.DATASETS = ('keypoints_coco_2017_val',)
-        cfg.MODEL.NUM_CLASSES = 2
+    elif args.dataset == "clevr_train":
+        cfg.TEST.DATASETS = ('clevr_train',)
+        cfg.MODEL.NUM_CLASSES = 4
+    elif args.dataset == "clevr_val":
+        cfg.TEST.DATASETS = ('clevr_val',)
+        cfg.MODEL.NUM_CLASSES = 4
     else:  # For subprocess call
         assert cfg.TEST.DATASETS, 'cfg.TEST.DATASETS shouldn\'t be empty'
     assert_and_infer_cfg()
@@ -107,4 +110,4 @@ if __name__ == '__main__':
         args,
         ind_range=args.range,
         multi_gpu_testing=args.multi_gpu_testing,
-        check_expected_results=True)
+        check_expected_results=False)

@@ -27,6 +27,7 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import numpy as np
+import cv2
 
 import pycocotools.mask as mask_util
 
@@ -269,3 +270,16 @@ def rle_masks_to_boxes(masks):
     boxes[i, :] = (x0, y0, x1, y1)
 
   return boxes, np.where(keep)[0]
+
+
+def rles_to_mask_wrt_box(rles, box, M):
+  """Convert from the COCO RLE segmentation format to a binary mask
+    encoded as a 2D array of data type numpy.float32. The RLE segmentation
+    is understood to be enclosed in the given box and rasterized to an M x M
+    mask. The resulting mask is therefore of shape (M, M).
+  """
+  m0 = mask_util.decode(rles).squeeze().astype(float)
+  x0, y0, x1, y1 = int(box[0]), int(box[1]), int(box[2]), int(box[3])
+  mask = cv2.resize(m0[y0:y1+1, x0:x1+1], dsize=(M,M))
+  mask = np.array(mask > 0, dtype=np.float32)
+  return mask

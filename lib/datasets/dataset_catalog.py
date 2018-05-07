@@ -38,6 +38,37 @@ RAW_DIR = 'raw_dir'
 
 # Available datasets
 DATASETS = {
+    'clevr_new': {
+        IM_DIR:
+            '/data/vision/billf/scratch/kyi/dataset/CLEVR_new/images',
+        ANN_FN:
+            '/data/vision/billf/scratch/kyi/dataset/CLEVR_new/CLEVR_new_coco_anns.json'
+    }, 
+    'clevr_train': { ## both clevr_train and clevr_val are used for testing
+        IM_DIR:
+            '/data/vision/billf/object-properties/dataset/billf-10/CLEVR_v1.0/images/train',
+        ANN_FN:
+            '/data/vision/billf/object-properties/dataset/billf-10/CLEVR_v1.0/scenes/CLEVR_train_scenes.json'
+    },
+    'clevr_val': {
+        IM_DIR:
+            '/data/vision/billf/object-properties/dataset/billf-10/CLEVR_v1.0/images/val',
+        ANN_FN:
+            '/data/vision/billf/object-properties/dataset/billf-10/CLEVR_v1.0/scenes/CLEVR_val_scenes.json'
+    },
+    'coco_2014_train': {
+        IM_DIR:
+            '/data/vision/billf/object-properties/dataset/torralba-3/COCO/train2014',
+        ANN_FN:
+            '/data/vision/billf/object-properties/dataset/torralba-3/COCO/Annotations/instances_train2014.json'
+    },
+    'coco_2014_val': {
+        IM_DIR:
+            '/data/vision/billf/object-properties/dataset/torralba-3/COCO/val2014',
+        ANN_FN:
+            '/data/vision/billf/object-properties/dataset/torralba-3/COCO/Annotations/instances_val2014.json'
+    },
+    # ===============================
     'cityscapes_fine_instanceonly_seg_train': {
         IM_DIR:
             _DATA_DIR + '/cityscapes/images',
@@ -62,18 +93,6 @@ DATASETS = {
             _DATA_DIR + '/cityscapes/annotations/instancesonly_gtFine_test.json',
         RAW_DIR:
             _DATA_DIR + '/cityscapes/raw'
-    },
-    'coco_2014_train': {
-        IM_DIR:
-            _DATA_DIR + '/coco/images/train2014',
-        ANN_FN:
-            _DATA_DIR + '/coco/annotations/instances_train2014.json'
-    },
-    'coco_2014_val': {
-        IM_DIR:
-            _DATA_DIR + '/coco/images/val2014',
-        ANN_FN:
-            _DATA_DIR + '/coco/annotations/instances_val2014.json'
     },
     'coco_2014_minival': {
         IM_DIR:

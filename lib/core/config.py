@@ -37,7 +37,7 @@ __C.TRAIN.DATASETS = ()
 # Each scale is the pixel size of an image's shortest side
 # If multiple scales are listed, then one is selected uniformly at random for
 # each training image (i.e., scale jitter data augmentation)
-__C.TRAIN.SCALES = (600, )
+__C.TRAIN.SCALES = (320, )
 
 # Max pixel size of the longest side of a scaled input image
 __C.TRAIN.MAX_SIZE = 1000
@@ -64,7 +64,7 @@ __C.TRAIN.BG_THRESH_HI = 0.5
 __C.TRAIN.BG_THRESH_LO = 0.0
 
 # Use horizontally-flipped images during training?
-__C.TRAIN.USE_FLIPPED = True
+__C.TRAIN.USE_FLIPPED = False
 
 # Overlap required between a ROI and ground-truth box in order for that ROI to
 # be used as a bounding-box regression training example
@@ -921,7 +921,7 @@ __C.OUTPUT_DIR = 'Outputs'
 __C.MATLAB = 'matlab'
 
 # Dump detection visualizations
-__C.VIS = False
+__C.VIS = True
 
 # Score threshold for visualization
 __C.VIS_TH = 0.9
@@ -949,7 +949,7 @@ __C.POOLING_SIZE = 7
 __C.CROP_RESIZE_WITH_MAX_POOL = True
 
 # [Infered value]
-__C.CUDA = False
+__C.CUDA = True
 
 __C.DEBUG = False
 
